@@ -31,7 +31,7 @@ public class UserController {
 
         emailValidation(user.getEmail());
         loginValidation(user.getLogin());
-        birthdayDateValidation(user.getBirthdayDate());
+        birthdayDateValidation(user.getBirthday());
 
         user.setId(getNextId());
         if (user.getName() == null || user.getName().isBlank()) {
@@ -73,9 +73,9 @@ public class UserController {
         if (newUser.getName() != null) {
             old.setName(newUser.getName());
         }
-        if (newUser.getBirthdayDate() != null) {
-            birthdayDateValidation(newUser.getBirthdayDate());
-            old.setBirthdayDate(newUser.getBirthdayDate());
+        if (newUser.getBirthday() != null) {
+            birthdayDateValidation(newUser.getBirthday());
+            old.setBirthday(newUser.getBirthday());
         }
 
         log.info("Пользователь обновлён: {}", old);
