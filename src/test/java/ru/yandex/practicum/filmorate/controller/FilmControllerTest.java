@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 
@@ -25,7 +24,7 @@ class FilmControllerTest {
         f.setName("Test Film");
         f.setDescription("Описание");
         f.setReleaseDate(LocalDate.of(2000, 1, 1));
-        f.setDuration(Duration.ofMinutes(90));
+        f.setDuration(90);
         return f;
     }
 
@@ -89,14 +88,14 @@ class FilmControllerTest {
     @Test
     void createFilm_fails_whenDurationZero() {
         Film f = validFilm();
-        f.setDuration(Duration.ZERO);
+        f.setDuration(0);
         assertThrows(ValidationException.class, () -> controller.createFilm(f));
     }
 
     @Test
     void createFilm_fails_whenDurationNegative() {
         Film f = validFilm();
-        f.setDuration(Duration.ofMinutes(-1));
+        f.setDuration(-1);
         assertThrows(ValidationException.class, () -> controller.createFilm(f));
     }
 
@@ -127,7 +126,7 @@ class FilmControllerTest {
         Film patch = new Film();
         patch.setId(saved.getId());
         patch.setDescription("Новое описание");
-        patch.setDuration(Duration.ZERO);
+        patch.setDuration(0);
 
         assertThrows(ValidationException.class, () -> controller.updateFilm(patch));
     }

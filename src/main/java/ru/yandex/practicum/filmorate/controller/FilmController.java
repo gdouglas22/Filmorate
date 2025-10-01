@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -108,12 +107,12 @@ public class FilmController {
         }
     }
 
-    private void durationValidation(Duration duration) {
+    private void durationValidation(Integer duration) {
         if (duration == null) {
             log.warn("Ошибка валидации: длительность не указана");
             throw new ValidationException("Продолжительность обязательна");
         }
-        if (duration.isZero() || duration.isNegative()) {
+        if (duration <= 0) {
             log.warn("Ошибка валидации: длительность некорректна ({})", duration);
             throw new ValidationException("Продолжительность фильма должна быть положительной");
         }
