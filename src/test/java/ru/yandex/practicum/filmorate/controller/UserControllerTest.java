@@ -70,6 +70,7 @@ class UserControllerTest {
         );
         assertEquals("Ошибка валидации пользователя", ex.getMessage());
     }
+
     @Test
     void createUser_fails_whenLoginBlank() {
         User u = validUser();
