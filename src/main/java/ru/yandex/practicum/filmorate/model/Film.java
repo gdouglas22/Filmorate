@@ -4,6 +4,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.model.annotations.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -23,4 +25,6 @@ public class Film {
     @NotNull(message = "Продолжительность обязательна")
     @Positive(message = "Продолжительность фильма должна быть положительной")
     private Integer duration;
+
+    private final Set<Long> likes = new HashSet<>();
 }
