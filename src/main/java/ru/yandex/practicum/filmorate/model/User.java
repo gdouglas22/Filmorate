@@ -4,6 +4,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.model.annotations.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class User {
@@ -22,4 +24,6 @@ public class User {
     @NotNull(message = "Дата рождения обязательна")
     @NotFuture(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
+
+    private final Map<Long, FriendshipStatus> friends = new HashMap<>();
 }
