@@ -4,7 +4,9 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.model.annotations.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -25,5 +27,5 @@ public class User {
     @NotFuture(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
-    private final Set<Long> friends = new HashSet<>();
+    private final Map<Long, FriendshipStatus> friends = new HashMap<>();
 }

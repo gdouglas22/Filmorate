@@ -11,6 +11,10 @@ import java.util.Set;
 public class Film {
     private long id;
 
+    private MpaRating mpaRating;
+
+    private final Set<Genre> genres = new HashSet<>();
+
     @NotBlank(message = "Имя обязательно")
     private String name;
 
