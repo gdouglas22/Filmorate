@@ -31,4 +31,7 @@ public class Film {
     private Integer duration;
 
     private final Set<Long> likes = new HashSet<>();
+
+    public void setMpa(MpaRating mpaRating) {
+    }
 }
