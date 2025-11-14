@@ -35,15 +35,14 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
     @Override
     public Map<Long, FriendshipStatus> findForUser(long userId) {
-        try {
-            List<Map.Entry<Long, FriendshipStatus>> rows = jdbc.query("select addressee_id, status from friendship where requester_id = ? order by addressee_id", (rs, n) -> Map.entry(rs.getLong(1), FriendshipStatus.valueOf(rs.getString(2))), userId);
-            Map<Long, FriendshipStatus> map = new LinkedHashMap<>();
-            for (var e : rows) map.put(e.getKey(), e.getValue());
-            return map;
-
-        } catch (Exception e) {
-            return Map.of();
-        }
+        List<Map.Entry<Long, FriendshipStatus>> rows = jdbc.query(
+                "select addressee_id, status from friendship where requester_id = ? order by addressee_id",
+                (rs, n) -> Map.entry(rs.getLong(1), FriendshipStatus.valueOf(rs.getString(2))),
+                userId
+        );
+        Map<Long, FriendshipStatus> map = new LinkedHashMap<>();
+        for (var e : rows) map.put(e.getKey(), e.getValue());
+        return map;
     }
 
     @Override

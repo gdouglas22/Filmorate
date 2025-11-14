@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserDto;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserDto getById(@PathVariable long id) {
+    public UserDto getById(@Valid @PathVariable long id) {
         log.info("Запрошен пользователь id={}", id);
         return userService.findById(id);
     }
@@ -44,10 +45,11 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDto update(@PathVariable long id, @RequestBody UpdateUserRequest req) {
-        log.info("Попытка обновления пользователя id={}", id);
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateById(@PathVariable long id, @Valid @RequestBody UpdateUserRequest req) {
+        log.info("[PUT /users/{{}}] Тело: {}", id, req);
         var updated = userService.update(id, req);
-        log.info("Пользователь обновлён id={}", updated.getId());
+        log.info("Пользователь обновлён по id в URL: {}", id);
         return updated;
     }
 
@@ -58,22 +60,34 @@ public class UserController {
         userService.addFriend(id, friendId);
     }
 
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto updateWithBody(@Valid @RequestBody UpdateUserRequest req) {
+        if (req.getId() == null || req.getId() <= 0) {
+            throw new ValidationException("Поле id обязательно для обновления пользователя");
+        }
+        log.info("[PUT /users] Тело: {}", req);
+        var updated = userService.update(req.getId(), req);
+        log.info("Пользователь обновлён по id из тела: {}", req.getId());
+        return updated;
+    }
+
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+    public void removeFriend(@PathVariable @Valid long id, @PathVariable long friendId) {
         log.info("Удаление из друзей: {} -> {}", id, friendId);
         userService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<UserDto> listFriends(@PathVariable long id) {
+    public List<UserDto> listFriends(@PathVariable @Valid long id) {
         var list = userService.getFriends(id);
         log.info("Список друзей пользователя {}: {}", id, list.size());
         return list;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<UserDto> commonFriends(@PathVariable long id, @PathVariable long otherId) {
+    public List<UserDto> commonFriends(@PathVariable @Valid long id, @PathVariable long otherId) {
         var list = userService.getCommonFriends(id, otherId);
         log.info("Общие друзья у {} и {}: {}", id, otherId, list.size());
         return list;

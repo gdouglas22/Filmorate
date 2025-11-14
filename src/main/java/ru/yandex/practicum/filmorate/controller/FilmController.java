@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.FilmDtoIds;
+import ru.yandex.practicum.filmorate.dto.FilmDtoVerbose;
 import ru.yandex.practicum.filmorate.dto.NewFilmRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateFilmRequest;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.List;
@@ -20,21 +23,21 @@ public class FilmController {
     private final FilmService filmService;
 
     @GetMapping
-    public List<FilmDto> getAll() {
+    public List<FilmDtoIds> getAll() {
         var all = filmService.findAll();
         log.info("Запрошен список всех фильмов, всего: {}", all.size());
         return all;
     }
 
     @GetMapping("/{id}")
-    public FilmDto getById(@PathVariable long id) {
+    public FilmDtoVerbose getById(@PathVariable long id) {
         log.info("Запрошен фильм id={}", id);
         return filmService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FilmDto create(@RequestBody NewFilmRequest req) {
+    public FilmDtoIds create(@Valid @RequestBody NewFilmRequest req) {
         log.info("Создание фильма");
         var created = filmService.create(req);
         log.info("Фильм создан id={}", created.getId());
@@ -42,11 +45,17 @@ public class FilmController {
     }
 
     @PutMapping("/{id}")
-    public FilmDto update(@PathVariable long id, @RequestBody UpdateFilmRequest req) {
+    public FilmDtoIds update(@PathVariable long id, @RequestBody UpdateFilmRequest req) {
         log.info("Обновление фильма id={}", id);
-        var updated = filmService.update(id, req);
-        log.info("Фильм обновлён id={}", updated.getId());
-        return updated;
+        return filmService.update(id, req);
+    }
+
+    @PutMapping
+    public FilmDtoIds updateWithBody(@RequestBody UpdateFilmRequest req) {
+        if (req.getId() == null || req.getId() <= 0)
+            throw new ValidationException("id обязателен в теле запроса");
+        log.info("Обновление фильма (из тела) id={}", req.getId());
+        return filmService.update(req.getId(), req);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -64,7 +73,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<FilmDto> getPopular(@RequestParam(defaultValue = "10") int count) {
+    public List<FilmDtoIds> getPopular(@RequestParam(defaultValue = "10") int count) {
         var list = filmService.getTop(count);
         log.info("Топ {} фильмов, найдено {}", count, list.size());
         return list;

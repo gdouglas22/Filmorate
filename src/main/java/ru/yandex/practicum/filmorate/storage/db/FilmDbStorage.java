@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dal.BaseRepository;
 import ru.yandex.practicum.filmorate.dal.mappers.FilmRowMapper;
+import ru.yandex.practicum.filmorate.dto.IdRef;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 import ru.yandex.practicum.filmorate.storage.FilmLikeStorage;
@@ -92,13 +94,16 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        short mpaId = mpaStorage.idOf(film.getMpaRating()).orElseThrow();
+        short mpaId = mpaStorage.idOf(film.getMpaRating())
+                .orElseThrow(() -> new IllegalStateException("Не найден id для MPA " + film.getMpaRating()));
+
         long id = insert(SQL_INSERT,
                 film.getName(),
                 film.getDescription(),
                 java.sql.Date.valueOf(film.getReleaseDate()),
                 film.getDuration(),
                 mpaId);
+
         film.setId(id);
         genreStorage.replaceForFilm(id, film.getGenres());
         film.getLikes().forEach(u -> likeStorage.add(id, u));
@@ -107,7 +112,9 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        short mpaId = mpaStorage.idOf(film.getMpaRating()).orElseThrow();
+        short mpaId = mpaStorage.idOf(film.getMpaRating())
+                .orElseThrow(() -> new IllegalStateException("Не найден id для MPA " + film.getMpaRating()));
+
         int n = update(SQL_UPDATE,
                 film.getName(),
                 film.getDescription(),
@@ -116,6 +123,7 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
                 mpaId,
                 film.getId());
         if (n == 0) throw new IllegalStateException("Film not updated id=" + film.getId());
+
         genreStorage.replaceForFilm(film.getId(), film.getGenres());
         return findById(film.getId()).orElse(film);
     }

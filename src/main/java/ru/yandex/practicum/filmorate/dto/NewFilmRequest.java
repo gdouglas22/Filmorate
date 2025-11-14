@@ -13,6 +13,6 @@ public class NewFilmRequest {
     private String description;
     private LocalDate releaseDate;
     private Integer duration;
-    private MpaRating mpaRating;
-    private Set<Genre> genres;
+    private IdRef mpa;
+    private Set<IdRef> genres;
 }

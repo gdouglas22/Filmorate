@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dal.BaseRepository;
 import ru.yandex.practicum.filmorate.dal.mappers.GenreRowMapper;
+import ru.yandex.practicum.filmorate.dto.GenreDto;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
@@ -27,9 +29,21 @@ public class GenreDbStorage extends BaseRepository<Genre> implements GenreStorag
             """;
     private static final String SQL_DELETE_FOR_FILM = "delete from film_genre where film_id=?";
     private static final String SQL_INSERT_LINK = "insert into film_genre(film_id,genre_id) values(?,?)";
+    private static final String SQL_ALL_WITH_ID = "select id, name from genre order by id";
 
     public GenreDbStorage(JdbcTemplate jdbc, GenreRowMapper mapper) {
         super(jdbc, mapper);
+    }
+
+    @Override
+    public Set<Short> findIdsByFilmId(long filmId) {
+        return new java.util.LinkedHashSet<>(
+                jdbc.query(
+                        "select genre_id from film_genre where film_id=? order by genre_id",
+                        (rs, n) -> rs.getShort(1),
+                        filmId
+                )
+        );
     }
 
     @Override
@@ -60,5 +74,35 @@ public class GenreDbStorage extends BaseRepository<Genre> implements GenreStorag
             short gid = idOf(g).orElseThrow();
             jdbc.update(SQL_INSERT_LINK, filmId, gid);
         }
+    }
+
+    @Override
+    public void replaceForFilmByIds(long filmId, Set<Short> genreIds) {
+        if (genreIds == null || genreIds.isEmpty()) {
+            replaceForFilm(filmId, java.util.Collections.emptySet());
+            return;
+        }
+        Set<Genre> enums = genreIds.stream()
+                .map(id -> findById(id).orElseThrow(() -> new NotFoundException("Жанр не найден id=" + id)))
+                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
+        replaceForFilm(filmId, enums);
+    }
+
+    @Override
+    public List<GenreDto> findAllWithIds() {
+        return jdbc.query("SELECT id, name FROM genre ORDER BY id", (rs, rowNum) -> {
+            String code = rs.getString("name");
+            Genre g = Genre.valueOf(code);
+            return new GenreDto(rs.getShort("id"), g.getDisplayName());
+        });
+    }
+
+    @Override
+    public Optional<String> nameById(short id) {
+        return jdbc.query("SELECT name FROM genre WHERE id=?", rs -> {
+            if (!rs.next()) return Optional.empty();
+            String code = rs.getString("name");
+            return Optional.of(Genre.valueOf(code).getDisplayName());
+        }, id);
     }
 }

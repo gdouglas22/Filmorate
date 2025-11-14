@@ -53,18 +53,16 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) {
-        if (userId == friendId) throw new IllegalArgumentException("Нельзя добавить в друзья самого себя");
+        if (userId == friendId) throw new IllegalArgumentException("Нельзя добавить себя");
         users.findById(userId).orElseThrow(NoSuchElementException::new);
         users.findById(friendId).orElseThrow(NoSuchElementException::new);
         friendships.upsert(userId, friendId, FriendshipStatus.CONFIRMED);
-        friendships.upsert(friendId, userId, FriendshipStatus.CONFIRMED);
     }
 
     public void removeFriend(long userId, long friendId) {
         users.findById(userId).orElseThrow(NoSuchElementException::new);
         users.findById(friendId).orElseThrow(NoSuchElementException::new);
         friendships.delete(userId, friendId);
-        friendships.delete(friendId, userId);
     }
 
     public List<UserDto> getFriends(long userId) {
