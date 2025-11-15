@@ -1,4 +1,3 @@
-// src/main/java/ru/yandex/practicum/filmorate/controller/UserController.java
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;

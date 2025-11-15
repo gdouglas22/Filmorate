@@ -1,51 +1,64 @@
-// src/test/java/ru/yandex/practicum/filmorate/storage/db/UserDbStorageTest.java
 package ru.yandex.practicum.filmorate.storage.db;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.dal.mappers.UserRowMapper;
+import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
-@JdbcTest
-@AutoConfigureTestDatabase
-@Import({UserDbStorage.class, UserRowMapper.class})
-@Sql(scripts = {"/schema.sql", "/sql/test-users.sql"})
-class UserDbStorageTest {
+@Import({UserDbStorage.class, UserRowMapper.class, FriendshipDbStorage.class})
+class UserDbStorageTest extends AbstractDbStorageTest {
 
-    @Autowired UserDbStorage storage;
+    @Autowired
+    UserDbStorage storage;
 
     @Test
-    void findAll_returnsSeeded() {
-        assertThat(storage.findAll()).hasSize(2);
+    @DisplayName("findById заполняет друзей пользователя")
+    void findById_populatesFriends() {
+        User user = storage.findById(1).orElseThrow();
+
+        assertEquals("alice@example.com", user.getEmail());
+        assertEquals(1, user.getFriends().size());
+        assertEquals(FriendshipStatus.CONFIRMED, user.getFriends().get(2L));
     }
 
     @Test
-    void findById_ok() {
-        var u = storage.findById(1).orElseThrow();
-        assertThat(u.getEmail()).isEqualTo("u1@mail.com");
+    @DisplayName("create добавляет пользователя в базу")
+    void create_persistsUser() {
+        User user = new User();
+        user.setEmail("new@example.com");
+        user.setLogin("neo");
+        user.setName("Neo");
+        user.setBirthday(LocalDate.of(1999, 12, 31));
+
+        User saved = storage.create(user);
+
+        assertTrue(saved.getId() > 0);
+        assertEquals("new@example.com", saved.getEmail());
+
+        User reloaded = storage.findById(saved.getId()).orElseThrow();
+        assertEquals("neo", reloaded.getLogin());
     }
 
     @Test
-    void create_and_update_ok() {
-        User u = new User();
-        u.setEmail("new@mail.com");
-        u.setLogin("new_login");
-        u.setName("New");
-        u.setBirthday(LocalDate.of(1990,1,1));
+    @DisplayName("update изменяет поля пользователя")
+    void update_updatesUser() {
+        User user = storage.findById(2).orElseThrow();
+        user.setName("Bob Updated");
+        user.setEmail("bob@update.com");
 
-        var created = storage.create(u);
-        assertThat(created.getId()).isPositive();
+        User updated = storage.update(user);
 
-        created.setName("Updated");
-        var updated = storage.update(created);
-        assertThat(updated.getName()).isEqualTo("Updated");
+        assertEquals("Bob Updated", updated.getName());
+        assertEquals("bob@update.com", updated.getEmail());
     }
 }

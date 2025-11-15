@@ -1,4 +1,3 @@
-// src/main/java/ru/yandex/practicum/filmorate/service/UserService.java
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;

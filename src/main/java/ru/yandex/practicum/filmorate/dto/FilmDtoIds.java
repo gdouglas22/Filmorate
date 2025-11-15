@@ -14,8 +14,8 @@ public class FilmDtoIds {
     private String description;
     private LocalDate releaseDate;
     private Integer duration;
-    private IdRef mpa;              // { "id": short }
-    private Set<IdRef> genres;      // [ { "id": short }, ... ]
+    private IdRef mpa;
+    private Set<IdRef> genres;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int likes;
 }

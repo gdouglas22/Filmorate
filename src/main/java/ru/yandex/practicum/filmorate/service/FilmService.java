@@ -52,15 +52,6 @@ public class FilmService {
         }).collect(Collectors.toList());
     }
 
-//    public FilmDtoIds findById(long id) {
-//        Film f = films.findById(id).orElseThrow(() -> new NotFoundException("Фильм не найден"));
-//        short mpaId = mpaStorage.idOf(f.getMpaRating())
-//                .orElseThrow(() -> new NotFoundException("MPA не найден для фильма id=" + id));
-//        Set<Short> genreIds = genreStorage.findIdsByFilmId(f.getId());
-//        return FilmMapper.toIdsDto(f, mpaId, genreIds);
-//    }
-
-
     public FilmDtoVerbose findById(long id) {
         Film f = films.findById(id)
                 .orElseThrow(() -> new NotFoundException("Фильм не найден"));
@@ -68,16 +59,16 @@ public class FilmService {
         short mpaId = mpaStorage.idOf(f.getMpaRating())
                 .orElseThrow(() -> new NotFoundException("MPA не найден для фильма id=" + id));
 
-        // Человеческое имя рейтинга
         String mpaName = mpaStorage.codeById(mpaId)
                 .map(code -> {
-                    // если есть enum с displayName
-                    try { return MpaRating.valueOf(code).getDisplayName(); }
-                    catch (IllegalArgumentException e) { return code.replace('_','-'); }
+                    try {
+                        return MpaRating.valueOf(code).getDisplayName();
+                    } catch (IllegalArgumentException e) {
+                        return code.replace('_', '-');
+                    }
                 })
                 .orElse(f.getMpaRating().name());
 
-        // Жанры: id + локализованное имя (на русском)
         java.util.LinkedHashSet<GenreDto> genres = genreStorage.findIdsByFilmId(f.getId()).stream()
                 .sorted(Short::compare)
                 .map(gid -> {
@@ -125,9 +116,9 @@ public class FilmService {
         Film current = films.findById(id)
                 .orElseThrow(() -> new NotFoundException("Фильм не найден"));
 
-        // применяем частичные обновления базовых полей
         if (req.getName() != null && !req.getName().isBlank()) current.setName(req.getName());
-        if (req.getDescription() != null && !req.getDescription().isBlank()) current.setDescription(req.getDescription());
+        if (req.getDescription() != null && !req.getDescription().isBlank())
+            current.setDescription(req.getDescription());
         if (req.getReleaseDate() != null) current.setReleaseDate(req.getReleaseDate());
         if (req.getDuration() != null) current.setDuration(req.getDuration());
 

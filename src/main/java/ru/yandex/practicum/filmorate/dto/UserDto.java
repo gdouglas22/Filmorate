@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.model.annotations.NoSpaces;
-import ru.yandex.practicum.filmorate.model.annotations.NotBlank;
 
 import java.time.LocalDate;
 

@@ -1,42 +1,52 @@
 package ru.yandex.practicum.filmorate.storage.db;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.dal.mappers.GenreRowMapper;
 import ru.yandex.practicum.filmorate.dto.GenreDto;
-import ru.yandex.practicum.filmorate.model.Genre;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-@JdbcTest
-@AutoConfigureTestDatabase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Import({GenreDbStorage.class, GenreRowMapper.class})
-@Sql(scripts = {"/schema.sql", "/sql/test-genres.sql"})
-class GenreDbStorageTest {
+class GenreDbStorageTest extends AbstractDbStorageTest {
 
-    @Autowired GenreDbStorage genres;
+    @Autowired
+    GenreDbStorage storage;
 
     @Test
-    void findAll_mapsEnumAndOrder() {
-        var all = genres.findAll();
-        assertThat(all).containsExactly(
-                Genre.COMEDY, Genre.DRAMA, Genre.CARTOON, Genre.THRILLER, Genre.DOCUMENTARY, Genre.ACTION
-        );
+    @DisplayName("findAllWithIds возвращает справочник жанров из БД")
+    void findAllWithIds_returnsSeed() {
+        List<GenreDto> dtos = storage.findAllWithIds();
+
+        assertEquals(6, dtos.size());
+        assertEquals("Комедия", dtos.get(0).getName());
+        assertEquals("Боевик", dtos.get(5).getName());
     }
 
     @Test
-    void findAllWithIds_returnsDisplayNames() {
-        var list = genres.findAllWithIds();
-        GenreDto drama = list.stream().filter(g -> g.getId()==2).findFirst().orElseThrow();
-        assertThat(drama.getName()).isEqualTo("Драма");
+    @DisplayName("findIdsByFilmId возвращает жанры фильма в порядке id")
+    void findIdsByFilmId_returnsOrderedIds() {
+        Set<Short> ids = storage.findIdsByFilmId(1);
+
+        LinkedHashSet<Short> expected = new LinkedHashSet<>(List.of((short) 4, (short) 6));
+        assertEquals(expected, ids);
     }
 
     @Test
-    void nameById_returnsLocalized() {
-        assertThat(genres.nameById((short)2)).hasValue("Драма");
+    @DisplayName("replaceForFilmByIds заменяет жанры фильма")
+    void replaceForFilmByIds_updatesLinkTable() {
+        storage.replaceForFilmByIds(5, Set.of((short) 1, (short) 3));
+
+        LinkedHashSet<Short> expected = new LinkedHashSet<>(List.of((short) 1, (short) 3));
+        assertEquals(expected, storage.findIdsByFilmId(5));
     }
 }
