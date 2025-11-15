@@ -38,8 +38,7 @@ public class BaseRepository<T> {
         }, keyHolder);
 
         if (keyHolder.getKeys() != null && !keyHolder.getKeys().isEmpty()) {
-            Object idObj = keyHolder.getKeys().getOrDefault("id",
-                    keyHolder.getKeys().getOrDefault("ID", null));
+            Object idObj = keyHolder.getKeys().getOrDefault("id", keyHolder.getKeys().getOrDefault("ID", null));
             if (idObj instanceof Number n) return n.longValue();
             for (Object v : keyHolder.getKeys().values()) {
                 if (v instanceof Number n2) return n2.longValue();

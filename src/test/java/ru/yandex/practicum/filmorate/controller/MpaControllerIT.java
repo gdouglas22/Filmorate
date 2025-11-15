@@ -13,26 +13,18 @@ class MpaControllerIT extends AbstractControllerIT {
     @Test
     @DisplayName("GET /mpa возвращает все рейтинги")
     void getAllMpa_ok() throws Exception {
-        mvc.perform(get("/mpa"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(5)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("G"));
+        mvc.perform(get("/mpa")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(5))).andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].name").value("G"));
     }
 
     @Test
     @DisplayName("GET /mpa/{id} возвращает рейтинг по id")
     void getMpaById_ok() throws Exception {
-        mvc.perform(get("/mpa/3"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(3))
-                .andExpect(jsonPath("$.name").value("PG-13"));
+        mvc.perform(get("/mpa/3")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(3)).andExpect(jsonPath("$.name").value("PG-13"));
     }
 
     @Test
     @DisplayName("GET /mpa/{id} → 404 для некорректного id")
     void getMpaById_notFound() throws Exception {
-        mvc.perform(get("/mpa/999"))
-                .andExpect(status().isNotFound());
+        mvc.perform(get("/mpa/999")).andExpect(status().isNotFound());
     }
 }

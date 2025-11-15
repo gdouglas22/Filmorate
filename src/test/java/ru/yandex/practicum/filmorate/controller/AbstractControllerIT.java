@@ -27,19 +27,11 @@ public abstract class AbstractControllerIT {
     private ObjectMapper objectMapper;
 
     protected ResultActions postJson(String uriTemplate, Object body, Object... uriVariables) throws Exception {
-        return mvc.perform(
-                post(uriTemplate, uriVariables)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJson(body))
-        );
+        return mvc.perform(post(uriTemplate, uriVariables).contentType(MediaType.APPLICATION_JSON).content(asJson(body)));
     }
 
     protected ResultActions putJson(String uriTemplate, Object body, Object... uriVariables) throws Exception {
-        return mvc.perform(
-                put(uriTemplate, uriVariables)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJson(body))
-        );
+        return mvc.perform(put(uriTemplate, uriVariables).contentType(MediaType.APPLICATION_JSON).content(asJson(body)));
     }
 
     protected int extractId(String json) throws JsonProcessingException {

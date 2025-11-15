@@ -52,8 +52,7 @@ public class FilmController {
 
     @PutMapping
     public FilmDtoIds updateWithBody(@RequestBody UpdateFilmRequest req) {
-        if (req.getId() == null || req.getId() <= 0)
-            throw new ValidationException("id обязателен в теле запроса");
+        if (req.getId() == null || req.getId() <= 0) throw new ValidationException("id обязателен в теле запроса");
         log.info("Обновление фильма (из тела) id={}", req.getId());
         return filmService.update(req.getId(), req);
     }

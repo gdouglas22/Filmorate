@@ -19,15 +19,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Import({
-        FilmDbStorage.class,
-        FilmRowMapper.class,
-        MpaDbStorage.class,
-        MpaRowMapper.class,
-        GenreDbStorage.class,
-        GenreRowMapper.class,
-        FilmLikeDbStorage.class
-})
+@Import({FilmDbStorage.class, FilmRowMapper.class, MpaDbStorage.class, MpaRowMapper.class, GenreDbStorage.class, GenreRowMapper.class, FilmLikeDbStorage.class})
 class FilmDbStorageTest extends AbstractDbStorageTest {
 
     @Autowired

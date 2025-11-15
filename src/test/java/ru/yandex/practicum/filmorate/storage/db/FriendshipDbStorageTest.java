@@ -34,7 +34,7 @@ class FriendshipDbStorageTest extends AbstractDbStorageTest {
         assertEquals(2, friends.size());
         assertTrue(friends.containsValue(FriendshipStatus.CONFIRMED));
         //friends.keySet().stream().forEach(key -> System.out.println(key.equals(((long)3))));
-        assertEquals(friends.keySet().contains((long)3), true);
+        assertEquals(friends.keySet().contains((long) 3), true);
     }
 
     @Test
