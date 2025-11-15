@@ -1,0 +1,14 @@
+{
+  "name": "No Id Film",
+  "description": "Invalid update",
+  "releaseDate": "2000-01-01",
+  "duration": 100,
+  "mpa": {
+    "id": 1
+  },
+  "genres": [
+    {
+      "id": 1
+    }
+  ]
+}
