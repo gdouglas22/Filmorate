@@ -14,23 +14,13 @@ class FilmControllerIT extends AbstractControllerIT {
     @Test
     @DisplayName("GET /films возвращает seed-данные")
     void getAllFilms_seedData() throws Exception {
-        mvc.perform(get("/films"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(5)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].name").value("Inception"))
-                .andExpect(jsonPath("$[1].id").value(2));
+        mvc.perform(get("/films")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(5))).andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].name").value("Inception")).andExpect(jsonPath("$[1].id").value(2));
     }
 
     @Test
     @DisplayName("GET /films/popular сортирует фильмы по количеству лайков")
     void getPopularFilms_sortedByLikes() throws Exception {
-        mvc.perform(get("/films/popular").param("count", "3"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[1].id").value(4))
-                .andExpect(jsonPath("$[2].id").value(5));
+        mvc.perform(get("/films/popular").param("count", "3")).andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(3))).andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[1].id").value(4)).andExpect(jsonPath("$[2].id").value(5));
     }
 
     @Test
@@ -50,25 +40,11 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        String createdJson = mvc.perform(post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFilmJson))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("New Film"))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String createdJson = mvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON).content(newFilmJson)).andExpect(status().isCreated()).andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.name").value("New Film")).andReturn().getResponse().getContentAsString();
 
         int id = extractId(createdJson);
 
-        mvc.perform(get("/films/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value("New Film"))
-                .andExpect(jsonPath("$.mpa.id").value(1))
-                .andExpect(jsonPath("$.genres", hasSize(2)))
-                .andExpect(jsonPath("$.likes").value(0));
+        mvc.perform(get("/films/{id}", id)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(id)).andExpect(jsonPath("$.name").value("New Film")).andExpect(jsonPath("$.mpa.id").value(1)).andExpect(jsonPath("$.genres", hasSize(2))).andExpect(jsonPath("$.likes").value(0));
     }
 
     @Test
@@ -85,29 +61,17 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        String createdJson = mvc.perform(post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(newFilmJson))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+        String createdJson = mvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON).content(newFilmJson)).andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
         int id = extractId(createdJson);
 
-        mvc.perform(put("/films/{id}/like/{userId}", id, 1L))
-                .andExpect(status().isNoContent());
+        mvc.perform(put("/films/{id}/like/{userId}", id, 1L)).andExpect(status().isNoContent());
 
-        mvc.perform(get("/films/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.likes", is(1)));
+        mvc.perform(get("/films/{id}", id)).andExpect(status().isOk()).andExpect(jsonPath("$.likes", is(1)));
 
-        mvc.perform(delete("/films/{id}/like/{userId}", id, 1L))
-                .andExpect(status().isNoContent());
+        mvc.perform(delete("/films/{id}/like/{userId}", id, 1L)).andExpect(status().isNoContent());
 
-        mvc.perform(get("/films/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.likes", is(0)));
+        mvc.perform(get("/films/{id}", id)).andExpect(status().isOk()).andExpect(jsonPath("$.likes", is(0)));
     }
 
     @Test
@@ -123,10 +87,7 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        mvc.perform(post("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidFilmJson))
-                .andExpect(status().isBadRequest());
+        mvc.perform(post("/films").contentType(MediaType.APPLICATION_JSON).content(invalidFilmJson)).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -146,17 +107,9 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        mvc.perform(put("/films/{id}", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("Inception Updated"));
+        mvc.perform(put("/films/{id}", 1).contentType(MediaType.APPLICATION_JSON).content(updateJson)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1)).andExpect(jsonPath("$.name").value("Inception Updated"));
 
-        mvc.perform(get("/films/{id}", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Inception Updated"))
-                .andExpect(jsonPath("$.duration").value(150));
+        mvc.perform(get("/films/{id}", 1)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Inception Updated")).andExpect(jsonPath("$.duration").value(150));
     }
 
     @Test
@@ -176,17 +129,9 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        mvc.perform(put("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.name").value("Finding Nemo Updated"));
+        mvc.perform(put("/films").contentType(MediaType.APPLICATION_JSON).content(updateJson)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(2)).andExpect(jsonPath("$.name").value("Finding Nemo Updated"));
 
-        mvc.perform(get("/films/{id}", 2))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Finding Nemo Updated"))
-                .andExpect(jsonPath("$.duration").value(110));
+        mvc.perform(get("/films/{id}", 2)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Finding Nemo Updated")).andExpect(jsonPath("$.duration").value(110));
     }
 
     @Test
@@ -203,10 +148,7 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        mvc.perform(put("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(noIdJson))
-                .andExpect(status().isBadRequest());
+        mvc.perform(put("/films").contentType(MediaType.APPLICATION_JSON).content(noIdJson)).andExpect(status().isBadRequest());
 
         String invalidIdJson = """
                 {
@@ -220,10 +162,7 @@ class FilmControllerIT extends AbstractControllerIT {
                 }
                 """;
 
-        mvc.perform(put("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidIdJson))
-                .andExpect(status().isBadRequest());
+        mvc.perform(put("/films").contentType(MediaType.APPLICATION_JSON).content(invalidIdJson)).andExpect(status().isBadRequest());
     }
 
 }
