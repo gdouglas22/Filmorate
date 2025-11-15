@@ -34,8 +34,12 @@ class FilmControllerIT extends AbstractControllerIT {
                   "duration": 120,
                   "mpa": { "id": 1 },
                   "genres": [
-                    { "id": 1 },
-                    { "id": 2 }
+                    { 
+                    "id": 1 
+                    },
+                    {
+                     "id": 2 
+                     }
                   ]
                 }
                 """;
@@ -56,8 +60,12 @@ class FilmControllerIT extends AbstractControllerIT {
                   "description": "Film for like test",
                   "releaseDate": "2001-01-01",
                   "duration": 90,
-                  "mpa": { "id": 1 },
-                  "genres": [ { "id": 1 } ]
+                  "mpa": {
+                   "id": 1 
+                   },
+                  "genres": [ { 
+                  "id": 1 
+                  } ]
                 }
                 """;
 
@@ -83,7 +91,9 @@ class FilmControllerIT extends AbstractControllerIT {
                   "description": "Too old film",
                   "releaseDate": "1800-01-01",
                   "duration": -1,
-                  "mpa": { "id": 1 }
+                  "mpa": { 
+                  "id": 1
+                   }
                 }
                 """;
 
@@ -99,10 +109,16 @@ class FilmControllerIT extends AbstractControllerIT {
                   "description": "Updated description",
                   "releaseDate": "2010-07-16",
                   "duration": 150,
-                  "mpa": { "id": 4 },
+                  "mpa": {
+                   "id": 4 
+                   },
                   "genres": [
-                    { "id": 4 },
-                    { "id": 6 }
+                    {
+                     "id": 4 
+                     },
+                    { 
+                    "id": 6 
+                    }
                   ]
                 }
                 """;
@@ -143,8 +159,14 @@ class FilmControllerIT extends AbstractControllerIT {
                   "description": "Invalid update",
                   "releaseDate": "2000-01-01",
                   "duration": 100,
-                  "mpa": { "id": 1 },
-                  "genres": [ { "id": 1 } ]
+                  "mpa": { 
+                  "id": 1 
+                  },
+                  "genres": [ 
+                  { 
+                  "id": 1 
+                  } 
+                  ]
                 }
                 """;
 
@@ -157,8 +179,12 @@ class FilmControllerIT extends AbstractControllerIT {
                   "description": "Invalid update",
                   "releaseDate": "2000-01-01",
                   "duration": 100,
-                  "mpa": { "id": 1 },
-                  "genres": [ { "id": 1 } ]
+                  "mpa": { 
+                  "id": 1 
+                  },
+                  "genres": [ {
+                   "id": 1 
+                   } ]
                 }
                 """;
 
