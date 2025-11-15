@@ -1,0 +1,14 @@
+{
+  "name": "Liked Film",
+  "description": "Film for like test",
+  "releaseDate": "2001-01-01",
+  "duration": 90,
+  "mpa": {
+    "id": 1
+  },
+  "genres": [
+    {
+      "id": 1
+    }
+  ]
+}
