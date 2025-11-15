@@ -37,18 +37,18 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("Должен создавать фильм и возвращать его по id")
     void create_and_get_ok() throws Exception {
         String newFilmJson = """
-          {
-            "name": "New Film",
-            "description": "Test description",
-            "releaseDate": "2000-01-01",
-            "duration": 120,
-            "mpa": { "id": 1 },
-            "genres": [
-              { "id": 1 },
-              { "id": 2 }
-            ]
-          }
-          """;
+                {
+                  "name": "New Film",
+                  "description": "Test description",
+                  "releaseDate": "2000-01-01",
+                  "duration": 120,
+                  "mpa": { "id": 1 },
+                  "genres": [
+                    { "id": 1 },
+                    { "id": 2 }
+                  ]
+                }
+                """;
 
         String createdJson = mvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,15 +75,15 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("Должен добавлять и удалять лайк фильму")
     void add_and_remove_like() throws Exception {
         String newFilmJson = """
-          {
-            "name": "Liked Film",
-            "description": "Film for like test",
-            "releaseDate": "2001-01-01",
-            "duration": 90,
-            "mpa": { "id": 1 },
-            "genres": [ { "id": 1 } ]
-          }
-          """;
+                {
+                  "name": "Liked Film",
+                  "description": "Film for like test",
+                  "releaseDate": "2001-01-01",
+                  "duration": 90,
+                  "mpa": { "id": 1 },
+                  "genres": [ { "id": 1 } ]
+                }
+                """;
 
         String createdJson = mvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,14 +114,14 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("Должен вернуть 400 при некорректных данных фильма")
     void create_invalid_film_bad_request() throws Exception {
         String invalidFilmJson = """
-          {
-            "name": "",
-            "description": "Too old film",
-            "releaseDate": "1800-01-01",
-            "duration": -1,
-            "mpa": { "id": 1 }
-          }
-          """;
+                {
+                  "name": "",
+                  "description": "Too old film",
+                  "releaseDate": "1800-01-01",
+                  "duration": -1,
+                  "mpa": { "id": 1 }
+                }
+                """;
 
         mvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,18 +133,18 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("PUT /films/{id} обновляет фильм по id из пути")
     void updateFilm_byPathVariable_ok() throws Exception {
         String updateJson = """
-          {
-            "name": "Inception Updated",
-            "description": "Updated description",
-            "releaseDate": "2010-07-16",
-            "duration": 150,
-            "mpa": { "id": 4 },
-            "genres": [
-              { "id": 4 },
-              { "id": 6 }
-            ]
-          }
-          """;
+                {
+                  "name": "Inception Updated",
+                  "description": "Updated description",
+                  "releaseDate": "2010-07-16",
+                  "duration": 150,
+                  "mpa": { "id": 4 },
+                  "genres": [
+                    { "id": 4 },
+                    { "id": 6 }
+                  ]
+                }
+                """;
 
         mvc.perform(put("/films/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -163,18 +163,18 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("PUT /films (body) обновляет фильм по id из тела")
     void updateFilm_withBody_ok() throws Exception {
         String updateJson = """
-          {
-            "id": 2,
-            "name": "Finding Nemo Updated",
-            "description": "Updated underwater adventure",
-            "releaseDate": "2003-05-30",
-            "duration": 110,
-            "mpa": { "id": 1 },
-            "genres": [
-              { "id": 3 }
-            ]
-          }
-          """;
+                {
+                  "id": 2,
+                  "name": "Finding Nemo Updated",
+                  "description": "Updated underwater adventure",
+                  "releaseDate": "2003-05-30",
+                  "duration": 110,
+                  "mpa": { "id": 1 },
+                  "genres": [
+                    { "id": 3 }
+                  ]
+                }
+                """;
 
         mvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -193,15 +193,15 @@ class FilmControllerIT extends AbstractControllerIT {
     @DisplayName("PUT /films (body) возвращает 400, если id в теле отсутствует или некорректен")
     void updateFilm_withBody_missingOrInvalidId_badRequest() throws Exception {
         String noIdJson = """
-          {
-            "name": "No Id Film",
-            "description": "Invalid update",
-            "releaseDate": "2000-01-01",
-            "duration": 100,
-            "mpa": { "id": 1 },
-            "genres": [ { "id": 1 } ]
-          }
-          """;
+                {
+                  "name": "No Id Film",
+                  "description": "Invalid update",
+                  "releaseDate": "2000-01-01",
+                  "duration": 100,
+                  "mpa": { "id": 1 },
+                  "genres": [ { "id": 1 } ]
+                }
+                """;
 
         mvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -209,16 +209,16 @@ class FilmControllerIT extends AbstractControllerIT {
                 .andExpect(status().isBadRequest());
 
         String invalidIdJson = """
-          {
-            "id": 0,
-            "name": "Invalid Id Film",
-            "description": "Invalid update",
-            "releaseDate": "2000-01-01",
-            "duration": 100,
-            "mpa": { "id": 1 },
-            "genres": [ { "id": 1 } ]
-          }
-          """;
+                {
+                  "id": 0,
+                  "name": "Invalid Id Film",
+                  "description": "Invalid update",
+                  "releaseDate": "2000-01-01",
+                  "duration": 100,
+                  "mpa": { "id": 1 },
+                  "genres": [ { "id": 1 } ]
+                }
+                """;
 
         mvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
