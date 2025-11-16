@@ -1,0 +1,15 @@
+{
+  "id": 2,
+  "name": "Finding Nemo Updated",
+  "description": "Updated underwater adventure",
+  "releaseDate": "2003-05-30",
+  "duration": 110,
+  "mpa": {
+    "id": 1
+  },
+  "genres": [
+    {
+      "id": 3
+    }
+  ]
+}

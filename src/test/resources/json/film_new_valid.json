@@ -1,0 +1,17 @@
+{
+  "name": "New Film",
+  "description": "Test description",
+  "releaseDate": "2000-01-01",
+  "duration": 120,
+  "mpa": {
+    "id": 1
+  },
+  "genres": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ]
+}

@@ -1,8 +1,10 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.InMemory;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 @Slf4j
+@Profile("inmemory")
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new ConcurrentHashMap<>();
