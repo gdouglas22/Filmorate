@@ -77,15 +77,29 @@ public class GenreDbStorage extends BaseRepository<Genre> implements GenreStorag
     }
 
     @Override
-    public void replaceForFilmByIds(long filmId, Set<Short> genreIds) {
+    public Set<Genre> findAllByIds(Set<Short> genreIds) {
         if (genreIds == null || genreIds.isEmpty()) {
-            replaceForFilm(filmId, java.util.Collections.emptySet());
-            return;
+            return new LinkedHashSet<>();
         }
-        Set<Genre> enums = genreIds.stream()
-                .map(id -> findById(id).orElseThrow(() -> new NotFoundException("Жанр не найден id=" + id)))
-                .collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new));
-        replaceForFilm(filmId, enums);
+        String placeholders = String.join(",", java.util.Collections.nCopies(genreIds.size(), "?"));
+        String sql = "select id, name from genre where id in (" + placeholders + ")";
+        Object[] params = genreIds.toArray();
+        var found = jdbc.query(sql, rs -> {
+            var map = new java.util.HashMap<Short, Genre>();
+            while (rs.next()) {
+                map.put(rs.getShort("id"), Genre.valueOf(rs.getString("name")));
+            }
+            return map;
+        }, params);
+        LinkedHashSet<Genre> genres = new LinkedHashSet<>();
+        for (Short id : genreIds) {
+            Genre genre = found.get(id);
+            if (genre == null) {
+                throw new NotFoundException("Жанр не найден id=" + id);
+            }
+            genres.add(genre);
+        }
+        return genres;
     }
 
     @Override

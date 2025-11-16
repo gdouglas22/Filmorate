@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.dal.mappers.GenreRowMapper;
 import ru.yandex.practicum.filmorate.dto.GenreDto;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Import({GenreDbStorage.class, GenreRowMapper.class})
 class GenreDbStorageTest extends AbstractDbStorageTest {
@@ -39,11 +42,19 @@ class GenreDbStorageTest extends AbstractDbStorageTest {
     }
 
     @Test
-    @DisplayName("replaceForFilmByIds заменяет жанры фильма")
-    void replaceForFilmByIds_updatesLinkTable() {
-        storage.replaceForFilmByIds(5, Set.of((short) 1, (short) 3));
+    @DisplayName("findAllByIds возвращает жанры в порядке, заданном id")
+    void findAllByIds_returnsOrderedGenres() {
+        LinkedHashSet<Short> ids = new LinkedHashSet<>(List.of((short) 5, (short) 2));
 
-        LinkedHashSet<Short> expected = new LinkedHashSet<>(List.of((short) 1, (short) 3));
-        assertEquals(expected, storage.findIdsByFilmId(5));
+        LinkedHashSet<Genre> expected = new LinkedHashSet<>(List.of(Genre.DOCUMENTARY, Genre.DRAMA));
+        assertEquals(expected, storage.findAllByIds(ids));
+    }
+
+    @Test
+    @DisplayName("findAllByIds выбрасывает исключение, если жанр не найден")
+    void findAllByIds_missingGenre_throws() {
+        LinkedHashSet<Short> ids = new LinkedHashSet<>(List.of((short) 1, (short) 99));
+
+        assertThrows(NotFoundException.class, () -> storage.findAllByIds(ids));
     }
 }

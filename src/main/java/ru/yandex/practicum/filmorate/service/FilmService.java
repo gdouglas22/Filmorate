@@ -100,14 +100,11 @@ public class FilmService {
                 .stream().map(IdRef::getId)
                 .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
 
-        for (Short gid : genreIds) {
-            genreStorage.codeById(gid)
-                    .orElseThrow(() -> new NotFoundException("Жанр не найден id=" + gid));
-        }
+        f.getGenres().clear();
+        f.getGenres().addAll(genreStorage.findAllByIds(genreIds));
 
         validate(f);
         f = films.create(f);
-        genreStorage.replaceForFilmByIds(f.getId(), genreIds);
 
         return FilmMapper.toIdsDto(f, mpaId, genreIds);
     }
@@ -138,11 +135,8 @@ public class FilmService {
         if (req.getGenres() != null) {
             Set<Short> ids = req.getGenres().stream().map(IdRef::getId)
                     .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
-            for (Short gid : ids) {
-                genreStorage.codeById(gid)
-                        .orElseThrow(() -> new NotFoundException("Жанр не найден id=" + gid));
-            }
-            genreStorage.replaceForFilmByIds(id, ids);
+            current.getGenres().clear();
+            current.getGenres().addAll(genreStorage.findAllByIds(ids));
             genreIdsOut = ids;
         } else {
             genreIdsOut = genreStorage.findIdsByFilmId(id);

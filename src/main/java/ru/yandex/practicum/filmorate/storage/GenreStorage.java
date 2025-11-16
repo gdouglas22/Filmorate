@@ -22,7 +22,7 @@ public interface GenreStorage {
 
     Optional<String> nameById(short id);
 
-    void replaceForFilmByIds(long filmId, Set<Short> genreIds);
+    Set<Genre> findAllByIds(Set<Short> genreIds);
 
     List<GenreDto> findAllWithIds();
 
